@@ -2,36 +2,61 @@ package com.lakshya.expensetracker.service;
 
 import com.lakshya.expensetracker.dto.ExpenseRequest;
 import com.lakshya.expensetracker.model.Expense;
+import com.lakshya.expensetracker.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ExpenseService {
 
-    private final List<Expense> expenses = new ArrayList<>();
-public Expense addExpense(ExpenseRequest request) {
+    private final ExpenseRepository expenseRepository;
 
-    if (request.getTitle() == null || request.getTitle().trim().isEmpty()) {
-        throw new IllegalArgumentException("Title cannot be empty");
+    public ExpenseService(ExpenseRepository expenseRepository) {
+        this.expenseRepository = expenseRepository;
     }
 
-    if (request.getAmount() <= 0) {
-        throw new IllegalArgumentException("Amount must be greater than zero");
+    public Expense addExpense(ExpenseRequest request) {
+
+        if (request.getTitle() == null || request.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be empty");
+        }
+
+        if (request.getAmount() <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than zero");
+        }
+
+        Expense expense = new Expense(
+        request.getTitle(),
+        request.getAmount(),
+        request.getCategory()
+);
+
+
+        return expenseRepository.save(expense);
     }
 
-    Expense expense = new Expense(
-            request.getTitle(),
-            request.getAmount()
-    );
-
-    expenses.add(expense);
-    return expense;
-}
+    public void deleteExpense(Long id) {
+    if (!expenseRepository.existsById(id)) {
+        throw new IllegalArgumentException("Expense not found");
+    }
+    expenseRepository.deleteById(id);
+    }
     
+    public Expense updateExpense(Long id, ExpenseRequest request) {
+
+    Expense expense = expenseRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Expense not found"));
+
+    expense.setTitle(request.getTitle());
+    expense.setAmount(request.getAmount());
+    expense.setCategory(request.getCategory());
+
+    return expenseRepository.save(expense);
+}
+
 
     public List<Expense> getAllExpenses() {
-        return expenses;
+        return expenseRepository.findAll();
     }
 }

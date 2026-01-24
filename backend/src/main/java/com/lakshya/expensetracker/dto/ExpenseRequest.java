@@ -4,10 +4,7 @@ public class ExpenseRequest {
 
     private String title;
     private double amount;
-
-    public ExpenseRequest() {
-        // default constructor required for JSON mapping
-    }
+    private String category;
 
     public String getTitle() {
         return title;
@@ -15,5 +12,9 @@ public class ExpenseRequest {
 
     public double getAmount() {
         return amount;
+    }
+
+    public String getCategory() {
+        return category;
     }
 }
