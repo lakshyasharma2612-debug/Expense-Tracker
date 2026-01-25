@@ -4,7 +4,7 @@ import com.lakshya.expensetracker.dto.ExpenseRequest;
 import com.lakshya.expensetracker.model.Expense;
 import com.lakshya.expensetracker.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
-
+import com.lakshya.expensetracker.exception.ResourceNotFoundException;
 import java.util.List;
 
 @Service
@@ -38,7 +38,8 @@ public class ExpenseService {
 
     public void deleteExpense(Long id) {
     if (!expenseRepository.existsById(id)) {
-        throw new IllegalArgumentException("Expense not found");
+       throw new ResourceNotFoundException("Expense not found");
+
     }
     expenseRepository.deleteById(id);
     }
@@ -46,7 +47,8 @@ public class ExpenseService {
     public Expense updateExpense(Long id, ExpenseRequest request) {
 
     Expense expense = expenseRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Expense not found"));
+           .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
+
 
     expense.setTitle(request.getTitle());
     expense.setAmount(request.getAmount());
