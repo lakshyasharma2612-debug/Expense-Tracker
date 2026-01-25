@@ -5,6 +5,9 @@ import com.lakshya.expensetracker.model.Expense;
 import com.lakshya.expensetracker.service.ExpenseService;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 import java.util.List;
 
@@ -24,10 +27,11 @@ public class ExpenseController {
         return expenseService.addExpense(request);
     }
 
-    @GetMapping
-    public List<Expense> getExpenses() {
-        return expenseService.getAllExpenses();
-    }
+   @GetMapping
+public Page<Expense> getExpenses(Pageable pageable) {
+    return expenseService.getExpenses(pageable);
+}
+
 
     @DeleteMapping("/{id}")
     public void deleteExpense(@PathVariable Long id) {

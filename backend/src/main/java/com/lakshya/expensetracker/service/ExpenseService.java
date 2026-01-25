@@ -5,6 +5,9 @@ import com.lakshya.expensetracker.model.Expense;
 import com.lakshya.expensetracker.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 import com.lakshya.expensetracker.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 @Service
@@ -35,6 +38,10 @@ public class ExpenseService {
 
         return expenseRepository.save(expense);
     }
+    public Page<Expense> getExpenses(Pageable pageable) {
+    return expenseRepository.findAll(pageable);
+}
+
 
     public void deleteExpense(Long id) {
     if (!expenseRepository.existsById(id)) {
@@ -58,7 +65,5 @@ public class ExpenseService {
 }
 
 
-    public List<Expense> getAllExpenses() {
-        return expenseRepository.findAll();
-    }
+   
 }
