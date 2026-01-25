@@ -4,6 +4,7 @@ import com.lakshya.expensetracker.dto.ExpenseRequest;
 import com.lakshya.expensetracker.model.Expense;
 import com.lakshya.expensetracker.service.ExpenseService;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -18,7 +19,8 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public Expense addExpense(@RequestBody ExpenseRequest request) {
+    public Expense addExpense(@Valid @RequestBody ExpenseRequest request)
+ {
         return expenseService.addExpense(request);
     }
 
