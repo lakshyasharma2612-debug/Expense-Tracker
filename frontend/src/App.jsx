@@ -7,7 +7,10 @@ function App() {
   const [category, setCategory] = useState("");
   const [error, setError] = useState("");
   const [page, setPage] = useState(0);
+   const [sortOption, setSortOption] = useState("title-asc");
 
+ 
+  
   useEffect(() => {
     fetchExpenses();
   }, [page]);
@@ -61,20 +64,34 @@ function App() {
       fetchExpenses();
     });
   }
+  const [sortField,sortOrder] = sortOption.split("-");
+  const sortedExpenses=[...expenses].sort((a,b)=>{
+    const valA=a[sortField];
+    const valB=b[sortField];
+    if(typeof valA==="number")
+    {
+      return sortOrder==="asc"?valA-valB:valB-valA;
 
+    }
+    const strA=valA?.toLowerCase();
+    const strB=valB?.toLowerCase();
+    if(strA<strB)return sortOrder==="asc"?-1:1;
+    if(strA>strB)return sortOrder==="desc"?1:-1;
+    return 0;
+  })
+ 
   return (
     <div
       style={{
         maxWidth: "600px",
         margin: "40px auto",
         fontFamily: "Arial",
-      }}
-    >
+      }} >
       <h1>Expense Tracker</h1>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <form onSubmit={addExpense} style={{ marginBottom: "20px" }}>
+      <form onSubmit={addExpense} style={{ marginBottom: "20px" }}/>
         <input
           type="text"
           placeholder="Title"
@@ -98,17 +115,30 @@ function App() {
           onChange={(e) => setCategory(e.target.value)}
           style={{ marginRight: "10px" }}
         />
-
+          
         <button type="submit">Add</button>
-      </form>
+        <form/>
+        <div style={{ marginBottom: "12px", display: "flex", gap: "12px" }}>
+          <label>
+           <strong>Sort By:</strong> {" "}
+            <select value={sortOption} onChange={(e)=>setSortOption(e.target.value)}>
+              <option value="title-desc">Title ↑</option>
+              <option value="title-asc">Title ↓</option>
+              <option value="category-desc">Category ↑</option>
+              <option value="category-asc">Category ↓</option>
+              <option value="amount-desc">Amount ↑</option>
+              <option value="amount-asc">Amount ↓</option>
+            </select>
+          </label>
 
+        </div>
       <ul>
-        {expenses.map((expense) => (
-          <li key={expense.id} style={{ marginBottom: "10px" }}>
+        {sortedExpenses.map((expense) => (
+          <li className="option" key={expense.id} style={{ marginBottom: "10px" }}>
             {expense.title} – ₹{expense.amount} ({expense.category})
-            <button
+            <button style={{ marginLeft: "10px" }}
               onClick={() => deleteExpense(expense.id)}
-              style={{ marginLeft: "10px" }}
+             
             >
               Delete
             </button>
@@ -116,7 +146,7 @@ function App() {
         ))}
       </ul>
 
-      <div style={{ marginTop: "20px" }}>
+      <div  className="nav-buttons">
         <button
           disabled={page === 0}
           onClick={() => setPage(page - 1)}

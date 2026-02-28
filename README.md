@@ -23,4 +23,3 @@ A full-stack expense tracker built using **Spring Boot**, **MySQL**, and **React
 - JavaScript
 - Fetch API
 
-## 📂 Project Structure
